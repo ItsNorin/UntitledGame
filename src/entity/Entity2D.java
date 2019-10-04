@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.ArrayList;
+
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -10,12 +12,10 @@ import javafx.scene.shape.Shape;
  * 
  * @author ItsNorin: <a href="http://github.com/ItsNorin">Github</a>
  */
-public class Entity2D {
+public abstract class Entity2D {
 
 	protected boolean isVisible;
 
-	/** position of entity in space */
-	protected Point2D position;
 	/** velocity of entity in UNIT per millisecond */
 	protected Point2D velocity;
 	/**
@@ -24,7 +24,7 @@ public class Entity2D {
 	 */
 	protected Point2D acceleration;
 
-	protected Rectangle hitBox;
+	protected Rectangle hitbox;
 
 	/**
 	 * rotation in degrees 0 is facing right 90 is facing up 180 - left 270 - down
@@ -35,13 +35,16 @@ public class Entity2D {
 	/** multiplier for rotational velocity per millisecond */
 	protected double rotationalAcceleration;
 
-	public Entity2D(double boundingBoxWidth, double boundingBoxHeight, Point2D position, Point2D velocity,
-			Point2D acceleration, double rotationalVelocity, double rotationalAcceleration, boolean isVisible) {
-		hitBox = new Rectangle(boundingBoxWidth, boundingBoxHeight);
-		hitBox.setFill(Color.AQUAMARINE);
-		hitBox.setOpacity(0.1);
+	public Entity2D(double hitBoxWidth, double hitBoxHeight, 
+			Point2D position, Point2D velocity, Point2D acceleration, 
+			double rotationalVelocity, double rotationalAcceleration, 
+			boolean isVisible) 
+	{
+		hitbox = new Rectangle(hitBoxWidth, hitBoxHeight);
+		hitbox.setFill(Color.AQUAMARINE);
+		hitbox.setOpacity(0.1);
+		setPosition(position);
 
-		this.position = position; // TODO: Ensure its copying and not re-using same point
 		this.isVisible = isVisible;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
@@ -50,35 +53,43 @@ public class Entity2D {
 	}
 
 	public Entity2D(Entity2D e) {
-		this(e.hitBox.getWidth(), e.hitBox.getHeight(), e.position, e.velocity, e.acceleration, e.rotationalVelocity,
+		this(e.hitbox.getWidth(), e.hitbox.getHeight(), e.getPosition(), e.velocity, e.acceleration, e.rotationalVelocity,
 				e.rotationalAcceleration, e.isVisible);
 	}
 
 	public Entity2D() {
-		this(1, 1, Point2D.ZERO, new Point2D(1., 1.), Point2D.ZERO, 0, 0, false);
-	}
-
-	public Entity2D setPosition(Point2D pos) {
-		position = pos;
-		return this;
+		this(1, 1, Point2D.ZERO, Point2D.ZERO, new Point2D(1., 1.), 0, 0, false);
 	}
 
 	public Entity2D setPosition(double xPos, double yPos) {
-		return setPosition(new Point2D(xPos, yPos));
+		hitbox.setX(xPos);
+		hitbox.setY(yPos);
+		return this;
 	}
 
-	public Point2D position() {
-		return position;
+	public Entity2D setPosition(Point2D pos) {
+		return setPosition(pos.getX(), pos.getY());
+	}
+	
+	public Point2D getPosition() {
+		return new Point2D(getX(), getY());
 	}
 
+	public double getX() {
+		return hitbox.getX();
+	}
+	public double getY() {
+		return hitbox.getY();
+	}
+	
 	/**
 	 * adds to entity's current position
 	 * 
 	 * @param dX x offset
 	 * @param dY y offset
 	 */
-	public Entity2D relocate(double dX, double dY) {
-		return setPosition(position.add(dX,dY));
+	public Entity2D offset(double dX, double dY) {
+		return setPosition(getX() + dX, getY() + dY);
 	}
 
 	/** velocity in UNIT/ms */
@@ -143,9 +154,12 @@ public class Entity2D {
 		return this;
 	}
 
-	/**
-	 * @param dVX x acceleration in UNIT/ms^2
-	 * @param dVY y acceleration in UNIT/ms^2
+	/**set acceleration, which is a multiplier for velocity per millisecond - 0:
+	 * stop instantly - 0.5: reduce velocity in half every millisecond - 1: no
+	 * change
+	 * 
+	 * @param dVX x velocity multiplier per millisecond
+	 * @param dVY y velocity multiplier per millisecond
 	 */
 	public Entity2D setAcceleration(double dVX, double dVY) {
 		return setAcceleration(new Point2D(dVX, dVY));
@@ -159,52 +173,57 @@ public class Entity2D {
 	public boolean isVisible() {
 		return isVisible;
 	}
-	
-	/**Finds distance to closest entity's hitbox
-	 * 0 for x and/or y if hitboxes overlap
+
+	/**
+	 * Finds distance to closest entity's hitbox 0 for x and/or y if hitboxes
+	 * overlap
+	 * 
 	 * @param e any valid entity
 	 * @return distance to entity's hitbox from the edge of this hitbox
 	 */
 	public Point2D distance(final Entity2D e) {
-		double dxLeft = hitBox.getX() - (e.hitBox.getX() + e.getBoundingBox().getWidth());
-		double dxRight = e.getBoundingBox().getX() - (hitBox.getX() + hitBox.getWidth());
+		double dxLeft = getX() - (e.getX() + e.getHitbox().getWidth());
+		double dxRight = e.getHitbox().getX() - (getX() + hitbox.getWidth());
 		double dx = Math.min(Math.abs(dxLeft), Math.abs(dxRight));
 
-		if (dxLeft < 0 && dxRight < 0) 
+		if (dxLeft < 0 && dxRight < 0)
 			dx = 0; // hitboxes intersect
-		
-		double dyLeft = hitBox.getY() - (e.getBoundingBox().getY() + e.getBoundingBox().getHeight());
-		double dyRight = e.getBoundingBox().getY() - (hitBox.getY() + hitBox.getHeight());
+
+		double dyLeft = hitbox.getY() - (e.getHitbox().getY() + e.getHitbox().getHeight());
+		double dyRight = e.getHitbox().getY() - (hitbox.getY() + hitbox.getHeight());
 		double dy = Math.min(Math.abs(dyLeft), Math.abs(dyRight));
 
-		if (dyLeft < 0 && dyRight < 0) 
+		if (dyLeft < 0 && dyRight < 0)
 			dy = 0; // hitboxes intersect
-			
+
 		return new Point2D((dxLeft < dxRight ? -dx : dx), (dyLeft < dyRight ? -dy : dy));
 	}
 
-	/**Finds closest entity based on hit boxes
+	/**
+	 * Finds closest entity based on hit boxes
+	 * 
 	 * @param entities
-	 * @return closest entity, or this if no entities found */
+	 * @return closest entity, or this if no entities found
+	 */
 	public Entity2D closestEntity(Entity2D entities[]) {
 		Entity2D e = this;
 		double currentDist = Double.MAX_VALUE;
-		
-		for(Entity2D s : entities) {
+
+		for (Entity2D s : entities) {
 			Point2D dist = this.distance(s);
 			double tempDist = Math.hypot(dist.getX(), dist.getY());
-			if(tempDist < currentDist) {
+			if (tempDist < currentDist) {
 				currentDist = tempDist;
 				e = s;
 			}
 		}
-		
+
 		return e;
 	}
-	
+
 	/**
-	 * Finds distance to closest entity's hitbox
-	 * 0 if they overlap
+	 * Finds distance to closest entity's hitbox 0 if they overlap
+	 * 
 	 * @param solids all entities to check hitboxs of
 	 * @return distance to closest hitbox
 	 */
@@ -217,7 +236,9 @@ public class Entity2D {
 	 * @return true if sprite bounding boxes are overlapping
 	 */
 	public boolean collides(Entity2D s) {
-		Shape r = Shape.intersect(hitBox, s.hitBox);
+		if(s == this) // cannot collide with itsself
+			return false;
+		Shape r = Shape.intersect(hitbox, s.hitbox);
 		return r.getBoundsInLocal().getWidth() != -1 || r.getBoundsInLocal().getHeight() != -1;
 	}
 
@@ -226,7 +247,7 @@ public class Entity2D {
 	 * 
 	 * @param ms Milliseconds since last update
 	 */
-	public void updatePosition(long ms, Entity2D solids[]) {
+	public void updatePosition(long ms, ArrayList<Entity2D> solids) {
 		// TODO: Ensure this works
 		setVelocity(velocity.getX() * Math.pow(acceleration.getX(), ms),
 				velocity.getY() * Math.pow(acceleration.getY(), ms));
@@ -238,19 +259,12 @@ public class Entity2D {
 			}
 		}
 
-		setPosition(position.add(velocity.multiply(ms)));
+		Point2D vMs = velocity.multiply(ms);
+		setPosition(getX() + vMs.getX(), getY() + vMs.getY());
 		setRotation(rotation * Math.pow(rotationalVelocity, ms));
-
-		updateBoundingBox();
 	}
 
-	protected void updateBoundingBox() {
-		hitBox.setRotate(this.rotation);
-		hitBox.setX(position.getX());
-		hitBox.setY(position.getY());
-	}
-
-	public Rectangle getBoundingBox() {
-		return hitBox;
+	public Rectangle getHitbox() {
+		return hitbox;
 	}
 }

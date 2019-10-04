@@ -25,7 +25,7 @@ public class Main extends Application {
 		Parent root = new Game(primaryStage);
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("JavaFX Maze Game Example");
+		primaryStage.setTitle("JavaFX Test Game");
 		primaryStage.setWidth(width);
 		primaryStage.setHeight(height);
 		primaryStage.setResizable(false);

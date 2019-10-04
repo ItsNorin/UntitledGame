@@ -9,12 +9,12 @@ package main;
 
 import java.util.ArrayList;
 
-import entity.Sprite;
+import entity.Creature;
+import entity.Entity2D;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import util.AnimatedImage;
-
+import util.TestLogger;
 /**
  * 
  * @author ItsNorin: <a href="http://github.com/ItsNorin">Github</a>
@@ -23,31 +23,23 @@ import util.AnimatedImage;
 public class Game extends Pane implements Runnable {
 
 	// instance variables
-	private ArrayList<Sprite> sprites;
-	/*
-	private final ImageView background = new ImageView();
-	private Level level;
-	private SimpleIntegerProperty score;
-	private int enemyCount;
-	private int chestCount;
-	private HBox GUIView;
-	private Label scoreLbl; // text label for displaying current score
-	private Label livesLbl; // text label for displaying remaining lives
-	private Label healthLbl; // text label for displaying remaining health
-*/
-	/**
-	 * Constructor
-	 */
+	private ArrayList<Entity2D> entities;
+	
+	private Creature test;
+	
 	public Game(Stage stage) {
 		// create the score counter
 		//this.score = new SimpleIntegerProperty(0);
 
-		// create our mobs arraylist
-		sprites = new ArrayList<>();
+		test = new Creature("playerDown.png", "playerUp.png", 
+				"playerLeft.png", "playerRight.png", 
+				10,10);
+		entities = new ArrayList<Entity2D>();
+		entities.add(test);
+		test.setVelocity(0.5, 0.7);
+		test.setAcceleration(0.9986, 0.998);
+		test.setPosition(100, 100);
 		
-		//sprites.add(new Sprite());
-		AnimatedImage t = new AnimatedImage("resources/playerDown.png", 4, 100).playRepeat();
-		getChildren().add(t);
 		
 		//this.enemyCount = 0;
 		this.loadLevel(1); // load the first level of our game.
@@ -85,73 +77,39 @@ public class Game extends Pane implements Runnable {
 		
 		//background.setImage(level.getImage()); // get the background image
 		
-		
-		//this.getChildren().add(background); // add the lvlMap imageview to scene
-		//this.initMobs(enemyCount); // initialize our mobs
-	}
-
-	/**
-	 * Initializes the default mobs for a given level
-	
-	private void initMobs(int count) {
-		player = (player == null ? new Player(this.level) : player); // load the player
-		player.setStartPoint(level.playerStart()[0], level.playerStart()[1]);
-		mobs.add(player); // add the player to the mob array first, so always index 0
-		// add our enemies to the arraylist after the player
-		for (int i = 0; i < count; i++) {
-			mobs.add(new Enemy(this.level, i));
-		}
-		// set the starting coordinates for each enemy, skip the player/index 0
-		for (int i = 1; i < mobs.size(); i++) {
-			Double[] coords = level.getEnemyCoords().get(i - 1);
-			mobs.get(i).setStartPoint(coords[0], coords[1]);
-		}
-		// iterate over the list of mobs and...
-		for (int i = 0; i < mobs.size(); i++) {
-			MOB m = mobs.get(i);
-			hitBoxes.add(m.getHitbox()); // add it's hitbox to our hitbox list
-			this.getChildren().add(m.getHitbox()); // add the hitbox to the scene
-			this.getChildren().add(m.getView()); // add it's view to our scene
-		}
-	}
-	
-	private void initTreasure(int count) {
-		for (int i = 0; i < count; i++) {
-			Double[] coords = level.treasureCoords().get(i);
-			Treasure t = new Treasure(i, coords[0], coords[1]);
-			treasure.add(t);
-			hitBoxes.add(t.getHitbox());
-			this.getChildren().addAll(t.getHitbox(), t.getView());
-		}
-	}
-
-	private Treasure getTreasure(Rectangle r) {
-		for (int i = 0; i < treasure.size(); i++) {
-			if (treasure.get(i).getHitbox().equals(r)) {
-				return treasure.get(i);
+		for(Entity2D e : entities) {
+			if(e instanceof Creature) {
+				e.getHitbox().setVisible(true);
+				this.getChildren().add(e.getHitbox());
+				this.getChildren().add(((Creature)e).getView());
 			}
 		}
-		return null;
+		
 	}
- */
 
+	private long prevns = 0;
+	private void update(long ns) {
+		if(prevns == 0) 
+			prevns = ns;
+		
+		long ms = (ns - prevns) / 1000000;
+		for(Entity2D e : entities) {
+			TestLogger.logEntityPositionData(e);
+			e.updatePosition(ms, entities);
+		}
+		prevns = ns;
+	}
+	
 	/**
-	 * Main game loop method.
+	 * Main game loop.
 	 */
 	private void initGameLoop() {
 		// main game loop
+		
 		AnimationTimer gameLoop = new AnimationTimer() {
 			@Override
 			public void handle(long ns) {
-				long ms = ns / 1000000;
-				// check if we're ready to move the enemies
-				/*for (int i = 0; i < entities.size(); i++) {
-					Entity2D e = entities.get(i);
-					//e.updatePosition(ms);
-				}
-				*/
-				// check if our player isDead/we need to respawn
-				
+				update(ns);
 			}
 		};
 		gameLoop.start();
