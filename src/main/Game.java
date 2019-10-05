@@ -11,8 +11,13 @@ import java.util.ArrayList;
 
 import entity.Creature;
 import entity.Entity2D;
+import entity.Player;
 import javafx.animation.AnimationTimer;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import util.TestLogger;
 /**
@@ -22,22 +27,28 @@ import util.TestLogger;
  */
 public class Game extends Pane implements Runnable {
 
+	private ArrayList<KeyCode> input;
+	
 	// instance variables
 	private ArrayList<Entity2D> entities;
 	
-	private Creature test;
+	private Player test;
 	
 	public Game(Stage stage) {
 		// create the score counter
 		//this.score = new SimpleIntegerProperty(0);
 
-		test = new Creature("playerDown.png", "playerUp.png", 
+		// keyboard input handling
+		input = new ArrayList<KeyCode>();
+		
+		test = new Player("playerDown.png", "playerUp.png", 
 				"playerLeft.png", "playerRight.png", 
-				10,10);
+				24,20, -3, -13);
+		
 		entities = new ArrayList<Entity2D>();
 		entities.add(test);
-		test.setVelocity(0.5, 0.7);
-		test.setAcceleration(0.9986, 0.998);
+		test.setVelocity(0.5, 0);
+		test.setAcceleration(0.98, 0.98);
 		test.setPosition(100, 100);
 		
 		
@@ -76,23 +87,31 @@ public class Game extends Pane implements Runnable {
 		}
 		
 		//background.setImage(level.getImage()); // get the background image
-		
+
+		// add all entities to screen
 		for(Entity2D e : entities) {
 			if(e instanceof Creature) {
-				e.getHitbox().setVisible(true);
-				this.getChildren().add(e.getHitbox());
 				this.getChildren().add(((Creature)e).getView());
+				
+				// make all hitboxes visible for debug
+				if(true) {
+					e.getHitbox().setVisible(true);
+					e.getHitbox().setFill(Color.RED);
+					e.getHitbox().setOpacity(0.15);
+					this.getChildren().add(e.getHitbox());
+				}
 			}
 		}
-		
 	}
 
 	private long prevns = 0;
 	private void update(long ns) {
 		if(prevns == 0) 
 			prevns = ns;
+		final long ms = (ns - prevns) / 1000000;
 		
-		long ms = (ns - prevns) / 1000000;
+		test.handleKeyInput(input);
+		
 		for(Entity2D e : entities) {
 			TestLogger.logEntityPositionData(e);
 			e.updatePosition(ms, entities);
@@ -116,17 +135,26 @@ public class Game extends Pane implements Runnable {
 	}
 
 	/**
-	 * Main runnable: 1) register our key handler 2) register our game over listener
-	 * 3) starts playing the game
+	 * Main runnable:
+	 *  - register key handler
+	 * 	- starts playing the game
 	 */
 	@Override
 	public void run() {
-		// System.out.println("layoutX: " + this.getScene().getX());
-		// System.out.println("layoutY: " + this.getScene().getY());
-		//this.getScene().setOnKeyPressed(e -> player.moveHandler(e));
-		// this.getScene().setOnKeyPressed(player::moveHandler); java8+ method reference
-		// style
-		// start the game loop now
-		this.initGameLoop();
+		
+		// keyboard input
+		this.getScene().setOnKeyPressed(e -> {
+			if (!input.contains(e.getCode())) {
+				input.add(e.getCode());
+				TestLogger.logKeys(input);
+			}
+		});
+		
+		this.getScene().setOnKeyReleased(e -> { 
+			input.remove(e.getCode()); 
+			TestLogger.logKeys(input);
+		});
+		
+		initGameLoop();
 	}
 }

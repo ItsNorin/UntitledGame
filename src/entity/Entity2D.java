@@ -3,7 +3,6 @@ package entity;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -13,9 +12,6 @@ import javafx.scene.shape.Shape;
  * @author ItsNorin: <a href="http://github.com/ItsNorin">Github</a>
  */
 public abstract class Entity2D {
-
-	protected boolean isVisible;
-
 	/** velocity of entity in UNIT per millisecond */
 	protected Point2D velocity;
 	/**
@@ -41,11 +37,9 @@ public abstract class Entity2D {
 			boolean isVisible) 
 	{
 		hitbox = new Rectangle(hitBoxWidth, hitBoxHeight);
-		hitbox.setFill(Color.AQUAMARINE);
-		hitbox.setOpacity(0.1);
+		hitbox.setVisible(isVisible);
 		setPosition(position);
 
-		this.isVisible = isVisible;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 		this.rotationalAcceleration = rotationalAcceleration;
@@ -54,7 +48,7 @@ public abstract class Entity2D {
 
 	public Entity2D(Entity2D e) {
 		this(e.hitbox.getWidth(), e.hitbox.getHeight(), e.getPosition(), e.velocity, e.acceleration, e.rotationalVelocity,
-				e.rotationalAcceleration, e.isVisible);
+				e.rotationalAcceleration, e.hitbox.isVisible());
 	}
 
 	public Entity2D() {
@@ -165,15 +159,6 @@ public abstract class Entity2D {
 		return setAcceleration(new Point2D(dVX, dVY));
 	}
 
-	public Entity2D setVisibility(boolean isVisible) {
-		this.isVisible = isVisible;
-		return this;
-	}
-
-	public boolean isVisible() {
-		return isVisible;
-	}
-
 	/**
 	 * Finds distance to closest entity's hitbox 0 for x and/or y if hitboxes
 	 * overlap
@@ -250,7 +235,7 @@ public abstract class Entity2D {
 	public void updatePosition(long ms, ArrayList<Entity2D> solids) {
 		// TODO: Ensure this works
 		setVelocity(velocity.getX() * Math.pow(acceleration.getX(), ms),
-				velocity.getY() * Math.pow(acceleration.getY(), ms));
+				    velocity.getY() * Math.pow(acceleration.getY(), ms));
 		setRotationalVelocity(rotationalVelocity + Math.pow(rotationalAcceleration, ms));
 
 		for (Entity2D e : solids) {
