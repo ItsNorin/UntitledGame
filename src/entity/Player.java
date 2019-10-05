@@ -10,7 +10,8 @@ import javafx.scene.input.KeyCode;
  */
 public final class Player extends Creature {
 	
-	private static final double KEY_PRESS_VELOCITY = 0.3;
+	private double KEY_PRESS_VELOCITY = 0.18;
+	private double SPRINTING_MULTIPLIER = 2;
 
 	/**
 	 * @param facingUp name of image for facing up animation
@@ -34,15 +35,31 @@ public final class Player extends Creature {
 	public void handleKeyInput(ArrayList<KeyCode> keys) {
 		// movement
 		double vX = 0, vY = 0;
+		boolean sprinting = false;
+		
 		for(KeyCode kc : keys) {
 			switch(kc) {
 			case A:   vX -= KEY_PRESS_VELOCITY;   break;
 			case D:   vX += KEY_PRESS_VELOCITY;   break;
 			case S:   vY += KEY_PRESS_VELOCITY;   break;
 			case W:   vY -= KEY_PRESS_VELOCITY;   break;
+			case SHIFT: sprinting = true;         break;
 			default:
 			}
 		}
+		
+		// ensure total velocity doesn't exceed KEY_PRESS_VELOCITY
+		if(Math.abs(vX) + Math.abs(vY) > KEY_PRESS_VELOCITY) {
+			final double b = KEY_PRESS_VELOCITY * Math.sqrt(0.5);
+			vX = (vX < 0) ? -b : b;
+			vY = (vY < 0) ? -b : b;
+		}
+		
+		if(sprinting) {
+			vX *= SPRINTING_MULTIPLIER;
+			vY *= SPRINTING_MULTIPLIER;
+		}
+		
 		this.setVelocity(velocity.getX() + vX, velocity.getY() + vY);
 	}
 

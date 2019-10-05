@@ -7,7 +7,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
- * A basic 2D entity, stores position, rotation, velocity, and acceleration
+ * A basic 2D entity with a hitbox, stores position, rotation, velocity, and acceleration
  * 
  * @author ItsNorin: <a href="http://github.com/ItsNorin">Github</a>
  */

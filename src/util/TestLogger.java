@@ -8,7 +8,7 @@ import javafx.scene.input.KeyCode;
 public enum TestLogger {
 	LOGGER;
 	public static final boolean ACTIVE = false;
-	public static final boolean LOG_KEYS = true;
+	public static final boolean LOG_KEYS = false;
 
 	public static void logEntityPositionData(Entity2D e) {
 		if (ACTIVE) {

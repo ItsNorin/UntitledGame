@@ -14,6 +14,7 @@ public class ImageViewAnimation extends AnimationTimer {
 	private final int offsetY;
 
 	private int currentIndex;
+	private long prevStartNS = 0;
 	
 	private Status status;
 
@@ -51,8 +52,6 @@ public class ImageViewAnimation extends AnimationTimer {
 		return status;
 	}
 
-	private long prevStartNS = 0;
-
 	@Override
 	public void handle(long ns) {
 		int index = 0;
@@ -64,6 +63,7 @@ public class ImageViewAnimation extends AnimationTimer {
 
 			long timeMS = (ns - prevStartNS) / 1000000;
 
+			// if time has exceeded length of animation, restart
 			if (timeMS > animationLength.toMillis()) {
 				timeMS = 0;
 				prevStartNS = ns;
@@ -72,15 +72,14 @@ public class ImageViewAnimation extends AnimationTimer {
 			index = (int) ((timeMS * numFrames) / animationLength.toMillis());
 		}
 
-		// change image frame if needed
-		setFrame(index);
+		setFrame(index); // change image frame if needed
 
 		// if reached last frame, stop if only need to play once
-		if (index == numFrames - 1)
-			if (playStatus == PlayStatus.PLAY_ONCE)
-				stop();
+		if (index == numFrames - 1 && playStatus == PlayStatus.PLAY_ONCE)
+			stop();
 	}
 
+	/** change frame of animation to given index */
 	private void setFrame(int index) {
 		if (index != currentIndex) 
 			if (imageView != null)
