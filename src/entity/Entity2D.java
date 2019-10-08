@@ -1,8 +1,9 @@
 package entity;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javafx.geometry.Point2D;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -105,6 +106,10 @@ public abstract class Entity2D {
 		return setVelocity(new Point2D(vX, vY));
 	}
 
+	public Entity2D setVelocityWithAngle(double theta, double v) {
+		return setVelocity(Math.cos(Math.toRadians(theta)) * v, Math.sin(Math.toRadians(theta)) * v);
+	}
+	
 	/** unit vector in the direction the point is facing */
 	public Point2D getFacingUnitVect() {
 		return new Point2D(Math.cos(Math.toRadians(rotation)), Math.sin(Math.toRadians(rotation)));
@@ -190,7 +195,7 @@ public abstract class Entity2D {
 	 * @param entities
 	 * @return closest entity, or this if no entities found
 	 */
-	public Entity2D closestEntity(Entity2D entities[]) {
+	public Entity2D closestEntity(final LinkedList<Entity2D> entities) {
 		Entity2D e = this;
 		double currentDist = Double.MAX_VALUE;
 
@@ -212,15 +217,15 @@ public abstract class Entity2D {
 	 * @param solids all entities to check hitboxs of
 	 * @return distance to closest hitbox
 	 */
-	public Point2D distanceToClosestEntity(Entity2D entities[]) {
+	public Point2D distanceToClosestEntity(final LinkedList<Entity2D> entities) {
 		return distance(closestEntity(entities));
 	}
 
 	/**
-	 * @param s any sprite
+	 * @param s any entity
 	 * @return true if sprite bounding boxes are overlapping
 	 */
-	public boolean collides(Entity2D s) {
+	public boolean overlaps(final Entity2D s) {
 		if(s == this) // cannot collide with itsself
 			return false;
 		Shape r = Shape.intersect(hitbox, s.hitbox);
@@ -232,16 +237,16 @@ public abstract class Entity2D {
 	 * 
 	 * @param ms Milliseconds since last update
 	 */
-	public void updatePosition(long ms, ArrayList<Entity2D> solids) {
+	public void updatePosition(final long ms, final LinkedList<Entity2D> entities) {
 		// TODO: Ensure this works
 		setVelocity(velocity.getX() * Math.pow(acceleration.getX(), ms),
 				    velocity.getY() * Math.pow(acceleration.getY(), ms));
 		setRotationalVelocity(rotationalVelocity + Math.pow(rotationalAcceleration, ms));
 
-		for (Entity2D e : solids) {
-			if (collides(e)) {
+		for (Entity2D e : entities) {
+			
 				// TODO do proper collision detection
-			}
+			
 		}
 
 		Point2D vMs = velocity.multiply(ms);
@@ -252,4 +257,6 @@ public abstract class Entity2D {
 	public Rectangle getHitbox() {
 		return hitbox;
 	}
+	
+	public abstract ImageView getView();
 }

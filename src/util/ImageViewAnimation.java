@@ -40,8 +40,24 @@ public class ImageViewAnimation extends AnimationTimer {
 
 		this.status = Status.STOPPED;
 		this.playStatus = PlayStatus.REPEAT;
+		this.animationLength =  animationLength;
 
 		this.start();
+	}
+	
+	/** creates copy of animation for given ImageView*/
+	public ImageViewAnimation clone() {
+		ImageView iv = new ImageView();
+		iv.setImage(imageView.getImage());
+		iv.setX(imageView.getX());
+		iv.setY(imageView.getY());
+		
+		ImageViewAnimation i = new ImageViewAnimation(iv, new Duration(animationLength.toMillis()), numFrames, offsetX, offsetY);
+		i.status = this.status;
+		i.playStatus = this.playStatus;
+		i.prevStartNS = this.prevStartNS;
+		i.setFrame(currentIndex);
+		return i;
 	}
 
 	public ImageView getImageView() {
@@ -67,16 +83,15 @@ public class ImageViewAnimation extends AnimationTimer {
 			if (timeMS > animationLength.toMillis()) {
 				timeMS = 0;
 				prevStartNS = ns;
+				// stop if only need to play once
+				if(playStatus == PlayStatus.PLAY_ONCE)
+					status = Status.STOPPED;
 			}
 
 			index = (int) ((timeMS * numFrames) / animationLength.toMillis());
 		}
 
 		setFrame(index); // change image frame if needed
-
-		// if reached last frame, stop if only need to play once
-		if (index == numFrames - 1 && playStatus == PlayStatus.PLAY_ONCE)
-			stop();
 	}
 
 	/** change frame of animation to given index */

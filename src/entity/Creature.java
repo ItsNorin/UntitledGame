@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javafx.animation.Animation.Status;
 import javafx.geometry.Point2D;
@@ -98,7 +99,7 @@ public class Creature extends Entity2D {
 		}
 		
 		double dv = Math.hypot(v.getX(), v.getY());
-		moveAnim.setLength(170 / dv);
+		moveAnim.setLength(250 / dv);
 		if(dv < 0.05) {
 			moveAnim.stop();
 		}
@@ -115,12 +116,13 @@ public class Creature extends Entity2D {
 	}
 	
 	@Override
-	public void updatePosition(long ms, ArrayList<Entity2D> solids) {
+	public void updatePosition(long ms, LinkedList<Entity2D> solids) {
 		super.updatePosition(ms, solids);
 		currentView.setX(hitbox.getX() + spriteXOffset);
 		currentView.setY(hitbox.getY() + spriteYOffset);
 	}
 	
+	@Override
 	public ImageView getView() {
 		return currentView;
 	}

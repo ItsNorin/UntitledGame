@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import entity.Entity2D;
 import javafx.scene.input.KeyCode;
@@ -9,6 +10,8 @@ public enum TestLogger {
 	LOGGER;
 	public static final boolean ACTIVE = false;
 	public static final boolean LOG_KEYS = false;
+	public static final boolean LOG_ENTITY_COUNT = true;
+	public static final boolean LOG_ENTITY_DATA = false;
 
 	public static void logEntityPositionData(Entity2D e) {
 		if (ACTIVE) {
@@ -28,6 +31,10 @@ public enum TestLogger {
 		}
 	}
 	
+	public static void logBasicEntityData(Entity2D e) {
+		
+	}
+	
 	public static void logKeys(ArrayList<KeyCode> input) {
 		if(LOG_KEYS) {
 			System.out.print("Keys: ");
@@ -35,5 +42,13 @@ public enum TestLogger {
 				System.out.print(kc.toString() + " ");
 			System.out.println();
 		}
+	}
+	
+	public static void logEntities(LinkedList<Entity2D> entities) {
+		if(LOG_ENTITY_COUNT)
+			System.out.println("Entity Count: " + Integer.toString(entities.size()));
+		if(LOG_ENTITY_DATA)
+			for(Entity2D e : entities)
+				logBasicEntityData(e);
 	}
 }

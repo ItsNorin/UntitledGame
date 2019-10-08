@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
  */
 public final class Player extends Creature {
 	
-	private double KEY_PRESS_VELOCITY = 0.18;
+	private double KEY_PRESS_VELOCITY = 0.12;
 	private double SPRINTING_MULTIPLIER = 2;
 
 	/**
@@ -39,12 +39,12 @@ public final class Player extends Creature {
 		
 		for(KeyCode kc : keys) {
 			switch(kc) {
-			case A:   vX -= KEY_PRESS_VELOCITY;   break;
-			case D:   vX += KEY_PRESS_VELOCITY;   break;
-			case S:   vY += KEY_PRESS_VELOCITY;   break;
-			case W:   vY -= KEY_PRESS_VELOCITY;   break;
-			case SHIFT: sprinting = true;         break;
-			default:
+				case A:   vX -= KEY_PRESS_VELOCITY;   break;
+				case D:   vX += KEY_PRESS_VELOCITY;   break;
+				case S:   vY += KEY_PRESS_VELOCITY;   break;
+				case W:   vY -= KEY_PRESS_VELOCITY;   break;
+				case SHIFT: sprinting = true;         break;
+				default:
 			}
 		}
 		
