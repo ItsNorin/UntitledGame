@@ -123,6 +123,14 @@ public class Creature extends Entity2D {
 	}
 	
 	@Override
+	public Creature setPosition(double xPos, double yPos) {
+		super.setPosition(xPos, yPos);
+		currentView.setX(xPos + spriteXOffset);
+		currentView.setY(yPos + spriteYOffset);
+		return this;
+	}
+	
+	@Override
 	public ImageView getView() {
 		return currentView;
 	}

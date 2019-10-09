@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javafx.scene.input.KeyCode;
 
@@ -12,6 +13,7 @@ public final class Player extends Creature {
 	
 	private double KEY_PRESS_VELOCITY = 0.12;
 	private double SPRINTING_MULTIPLIER = 2;
+	private double minX, maxX, minY, maxY;
 
 	/**
 	 * @param facingUp name of image for facing up animation
@@ -30,6 +32,7 @@ public final class Player extends Creature {
 			double spriteXOffset, double spriteYOffset) 
 	{
 		super(facingUp, facingDown, facingLeft, facingRight, width, height, spriteXOffset, spriteYOffset);
+		setBounds(0,0,0,0);
 	}
 	
 	public void handleKeyInput(ArrayList<KeyCode> keys) {
@@ -61,6 +64,47 @@ public final class Player extends Creature {
 		}
 		
 		this.setVelocity(velocity.getX() + vX, velocity.getY() + vY);
+	}
+	
+	@Override
+	public void updatePosition(long ms, LinkedList<Entity2D> solids) {
+		// allows player to be forced to stay in a certain area
+		super.updatePosition(ms, solids);
+		double newX = hitbox.getX(), newY = hitbox.getY();
+		double newVX = this.velocity.getX(), newVY = this.velocity.getY();
+		
+		if(minX != maxX) {
+			if(hitbox.getX() + hitbox.getWidth() > maxX) {
+				newX = maxX - hitbox.getWidth();
+				newVX = 0;
+			}
+			else if(hitbox.getX() < minX) {
+				newX = minX;
+				newVX = 0;
+			}
+		}
+		
+		if(minY != maxY) {
+			if(hitbox.getY() + hitbox.getHeight() > maxY)  {
+				newY = maxY - hitbox.getHeight();
+				newVY = 0;
+			}
+			else if(hitbox.getY() < minY) {
+				newY = minY;
+				newVY = 0;
+			}
+		}
+		
+		this.setVelocity(newVX, newVY);
+		this.setPosition(newX, newY);
+	}
+	
+	/** Sets bounds for player's position */
+	public void setBounds(double minX, double maxX, double minY, double maxY) {
+		this.minX = minX;
+		this.maxX = maxX;
+		this.minY = minY;
+		this.maxY = maxY;
 	}
 
 }

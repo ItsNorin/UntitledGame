@@ -39,7 +39,8 @@ public abstract class Entity2D {
 	{
 		hitbox = new Rectangle(hitBoxWidth, hitBoxHeight);
 		hitbox.setVisible(isVisible);
-		setPosition(position);
+		hitbox.setX(position.getX());
+		hitbox.setY(position.getY());
 
 		this.velocity = velocity;
 		this.acceleration = acceleration;
@@ -244,7 +245,6 @@ public abstract class Entity2D {
 		setRotationalVelocity(rotationalVelocity + Math.pow(rotationalAcceleration, ms));
 
 		for (Entity2D e : entities) {
-			
 				// TODO do proper collision detection
 			
 		}
