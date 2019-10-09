@@ -72,6 +72,34 @@ public class Creature extends Entity2D {
 		health = new Stat("Health", 10).recover();
 	}
 	
+	// to make instantiation of creatures less argument heavy
+	public static class CreatureParameters {
+		public String up, down, left, right;
+		public double width, height, spriteXOffset, spriteYOffset;
+		public double maxHealth;
+		
+		public CreatureParameters(
+				String facingUp, String facingDown, 
+				String facingLeft, String facingRight, 
+				double width, double height, 
+				double spriteXOffset, double spriteYOffset) 
+		{
+			up = facingUp;
+			down = facingDown;
+			left = facingLeft;
+			right = facingRight;
+			this.width = width;
+			this.height = height;
+			this.spriteXOffset = spriteXOffset;
+			this.spriteYOffset = spriteYOffset;
+		}
+	}
+	
+	public Creature(CreatureParameters cp) {
+		this(cp.up, cp.down, cp.left, cp.right, cp.width, cp.height, cp.spriteXOffset, cp.spriteYOffset);
+		health.setMax(cp.maxHealth).recover();
+	}
+	
 	public Stat getHealth() {
 		return health;
 	}

@@ -35,6 +35,10 @@ public final class Player extends Creature {
 		setBounds(0,0,0,0);
 	}
 	
+	public Player(Creature.CreatureParameters cp) {
+		super(cp);
+	}
+
 	public void handleKeyInput(ArrayList<KeyCode> keys) {
 		// movement
 		double vX = 0, vY = 0;

@@ -7,6 +7,7 @@
  */
 package main;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,6 +18,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import levels.Level;
+import util.ResourceLoader;
 import util.TestLogger;
 
 /**
@@ -40,9 +42,7 @@ public class Game extends Pane implements Runnable {
 		// keyboard input handling
 		input = new ArrayList<KeyCode>();
 		
-		player = new Player("playerDown.png", "playerUp.png", 
-				"playerLeft.png", "playerRight.png", 
-				24,20, -3, -13);
+		player = (Player)ResourceLoader.loadEntityFromXML("defaultPlayer.xml");
 		
 		 // init everything once screen shown
 		stage.setOnShown(e -> this.run());
@@ -81,7 +81,6 @@ public class Game extends Pane implements Runnable {
 	/** Main game loop. */
 	private void initGameLoop() {
 		// main game loop
-		
 		AnimationTimer gameLoop = new AnimationTimer() {
 			@Override
 			public void handle(long ns) {
@@ -95,8 +94,6 @@ public class Game extends Pane implements Runnable {
 	private void update(long ns) {
 		player.handleKeyInput(input);
 		currentLevel.update();
-		/*
-		*/
 	}
 	
 }

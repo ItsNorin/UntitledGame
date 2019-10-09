@@ -1,0 +1,14 @@
+<entity type="player">
+	<upImg>playerDown.png</upImg>
+  <downImg>playerUp.png</downImg>
+  <rightImg>playerRight.png</rightImg>
+  <leftImg>playerLeft.png</leftImg>
+
+  <hitboxWidth>24</hitboxWidth>
+  <hitboxHeight>20</hitboxHeight>
+  
+  <spriteXOffset>-3</spriteXOffset>
+  <spriteYOffset>-13</spriteYOffset>
+
+  <maxHealth>10</maxHealth>
+</entity>
