@@ -7,7 +7,6 @@
  */
 package main;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import levels.Level;
+import util.FrameRateCounter;
 import util.ResourceLoader;
 import util.TestLogger;
 
@@ -32,6 +32,8 @@ public class Game extends Pane implements Runnable {
 	private ArrayList<KeyCode> input;
 	private Player player;
 	
+	private final FrameRateCounter frc;
+	
 	public Game(Stage stage) {
 		levels = new HashMap<String, Level>();
 		currentLevel = null;
@@ -44,6 +46,9 @@ public class Game extends Pane implements Runnable {
 		
 		player = (Player)ResourceLoader.loadEntityFromXML("defaultPlayer.xml");
 		
+		frc = new FrameRateCounter();
+		frc.getLabel().setViewOrder(-100);
+		
 		 // init everything once screen shown
 		stage.setOnShown(e -> this.run());
 	}
@@ -53,6 +58,8 @@ public class Game extends Pane implements Runnable {
 	 * 	- starts playing the game  */
 	@Override
 	public void run() {
+		// add framerate counter
+		this.getChildren().add(frc.getLabel());
 		// keyboard input
 		this.getScene().setOnKeyPressed(e -> {
 			if (!input.contains(e.getCode())) {

@@ -1,14 +1,21 @@
 <entity type="player">
+  <!-- Images used for facing animations -->
 	<upImg>playerDown.png</upImg>
   <downImg>playerUp.png</downImg>
   <rightImg>playerRight.png</rightImg>
   <leftImg>playerLeft.png</leftImg>
 
+  <!-- Mumber of frames in facing animation. Must be identical for all animations-->
+  <numberOfFrames>4</numberOfFrames>
+  
+  <!-- hitbox size-->
   <hitboxWidth>24</hitboxWidth>
   <hitboxHeight>20</hitboxHeight>
   
+ <!-- offset of images relative to hitbox -->
   <spriteXOffset>-3</spriteXOffset>
   <spriteYOffset>-13</spriteYOffset>
-
+  
+  <!-- health of player -->
   <maxHealth>10</maxHealth>
 </entity>

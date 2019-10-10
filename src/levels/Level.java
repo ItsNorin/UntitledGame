@@ -61,6 +61,7 @@ public final class Level {
 	
 	/** @param e removes entity from level */
 	public void removeEntity(Entity2D e) {
+		e.cleanup();
 		entities.remove(e);
 		removeEntityFromPane(e);
 		TestLogger.logEntities(entities);
@@ -152,8 +153,8 @@ public final class Level {
 				b.setPosition((pane.getLayoutBounds().getMaxX() - pane.getLayoutBounds().getMinX()) / 2 + pane.getLayoutBounds().getMinX(), 
 						(pane.getLayoutBounds().getMaxY() - pane.getLayoutBounds().getMinY()) / 2 +  pane.getLayoutBounds().getMinY());
 				
-				for(double i = 0; i < 360; i += 10) 
-					addEntity(b.clone().setVelocityWithAngle(i, 0.08));
+				for(double i = 0; i < 360; i += 0.5) 
+					addEntity(b.clone().setVelocityWithAngle(i, 0.4));
 			}
 			
 			// update all entities
@@ -167,7 +168,7 @@ public final class Level {
 					
 				} else {
 					// if entity's hitbox is outside of window, remove it
-					if(!isRectangleInWindow(e.getHitbox(), -10, -10)) 
+					if(!isRectangleInWindow(e.getHitbox(), 40, 40)) 
 						toRemove.add(e);
 				}
 				
@@ -194,7 +195,7 @@ public final class Level {
 	public void end() {
 		if(aLevelExists) {
 			for(Entity2D e : entities)
-				removeEntity(e);
+				removeEntityFromPane(e);
 		}
 		Level.pane = null;
 		Level.aLevelExists = false;

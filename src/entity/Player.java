@@ -24,14 +24,16 @@ public final class Player extends Creature {
 	 * @param height height of hitbox
 	 * @param spriteXOffset x offset of sprite animation relative to hitbox
 	 * @param spriteYOffset y offset of sprite animation relative to hitbox
+	 * @param numFrames number of frames in each facing animation. All images must have same number of frames
 	 */
 	public Player(
 			String facingUp, String facingDown, 
 			String facingLeft, String facingRight, 
 			double width, double height, 
-			double spriteXOffset, double spriteYOffset) 
+			double spriteXOffset, double spriteYOffset,
+			int numFrames) 
 	{
-		super(facingUp, facingDown, facingLeft, facingRight, width, height, spriteXOffset, spriteYOffset);
+		super(facingUp, facingDown, facingLeft, facingRight, width, height, spriteXOffset, spriteYOffset, numFrames);
 		setBounds(0,0,0,0);
 	}
 	

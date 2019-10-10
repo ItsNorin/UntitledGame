@@ -42,12 +42,14 @@ public class Creature extends Entity2D {
 	 * @param height height of hitbox
 	 * @param spriteXOffset x offset of sprite animation relative to hitbox
 	 * @param spriteYOffset y offset of sprite animation relative to hitbox
+	 * @param numFrames number of frames in each facing animation. All images must have same number of frames
 	 */
 	public Creature(
 			String facingUp, String facingDown, 
 			String facingLeft, String facingRight, 
 			double width, double height, 
-			double spriteXOffset, double spriteYOffset) 
+			double spriteXOffset, double spriteYOffset,
+			int numFrames) 
 	{
 		super();
 		
@@ -63,7 +65,7 @@ public class Creature extends Entity2D {
 		moveImages.add(FACING.UP.VALUE, ResourceLoader.getImage(facingUp));
 		moveImages.add(FACING.DOWN.VALUE, ResourceLoader.getImage(facingDown));
 		
-		moveAnim = new ImageViewAnimation(currentView, new Duration(1000), 4, 0, 0);
+		moveAnim = new ImageViewAnimation(currentView, new Duration(1000), numFrames, 0, 0);
 		
 		currentFacing = FACING.DOWN;
 		setAnimation(currentFacing.VALUE);
@@ -77,12 +79,14 @@ public class Creature extends Entity2D {
 		public String up, down, left, right;
 		public double width, height, spriteXOffset, spriteYOffset;
 		public double maxHealth;
+		public int numFrames;
 		
 		public CreatureParameters(
 				String facingUp, String facingDown, 
 				String facingLeft, String facingRight, 
 				double width, double height, 
-				double spriteXOffset, double spriteYOffset) 
+				double spriteXOffset, double spriteYOffset,
+				int numFrames) 
 		{
 			up = facingUp;
 			down = facingDown;
@@ -92,11 +96,12 @@ public class Creature extends Entity2D {
 			this.height = height;
 			this.spriteXOffset = spriteXOffset;
 			this.spriteYOffset = spriteYOffset;
+			this.numFrames = numFrames;
 		}
 	}
 	
 	public Creature(CreatureParameters cp) {
-		this(cp.up, cp.down, cp.left, cp.right, cp.width, cp.height, cp.spriteXOffset, cp.spriteYOffset);
+		this(cp.up, cp.down, cp.left, cp.right, cp.width, cp.height, cp.spriteXOffset, cp.spriteYOffset, cp.numFrames);
 		health.setMax(cp.maxHealth).recover();
 	}
 	
@@ -129,7 +134,7 @@ public class Creature extends Entity2D {
 		double dv = Math.hypot(v.getX(), v.getY());
 		moveAnim.setLength(250 / dv);
 		if(dv < 0.05) {
-			moveAnim.stop();
+			moveAnim.pauseAndGoToStart();
 		}
 		else if(moveAnim.getStatus() != Status.RUNNING)
 				moveAnim.playRepeat();
@@ -163,4 +168,8 @@ public class Creature extends Entity2D {
 		return currentView;
 	}
 
+	@Override 
+	public void cleanup() {
+		moveAnim.stop();
+	}
 }

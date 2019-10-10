@@ -123,16 +123,16 @@ public class ImageViewAnimation extends AnimationTimer {
 		playStatus = PlayStatus.REPEAT;
 	}
 
-	public void stop() {
-		status = Status.STOPPED;
-		setFrame(0);
-	}
-
 	public void pause() {
 		status = Status.PAUSED;
 	}
 
 	public void resume() {
 		status = Status.RUNNING;
+	}
+	
+	public void pauseAndGoToStart() {
+		status = Status.PAUSED;
+		setFrame(0);
 	}
 }

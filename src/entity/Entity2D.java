@@ -259,4 +259,7 @@ public abstract class Entity2D {
 	}
 	
 	public abstract ImageView getView();
+	
+	/** stop doing anything, clean up entity for garbage collection */
+	public abstract void cleanup();
 }

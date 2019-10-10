@@ -38,34 +38,29 @@ public enum ResourceLoader {
 	}
 	
 	
-	private static Creature.CreatureParameters loadCreatureParamsFromXML(File XMLFile) {
+	private static Creature.CreatureParameters loadCreatureParamsFromXML(File XMLFile) throws ParserConfigurationException, SAXException, IOException {
 		Creature.CreatureParameters cp = null;
-		
-		try {
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(XMLFile);
-			Element root = doc.getDocumentElement();
 
-			// Mandatory to load
-			String up = root.getElementsByTagName("upImg").item(0).getTextContent();
-			String down = root.getElementsByTagName("downImg").item(0).getTextContent();
-			String left = root.getElementsByTagName("leftImg").item(0).getTextContent();
-			String right = root.getElementsByTagName("rightImg").item(0).getTextContent();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(XMLFile);
+		Element root = doc.getDocumentElement();
 
-			double width = Double.parseDouble(root.getElementsByTagName("hitboxWidth").item(0).getTextContent());
-			double height = Double.parseDouble(root.getElementsByTagName("hitboxHeight").item(0).getTextContent());
+		String up = root.getElementsByTagName("upImg").item(0).getTextContent();
+		String down = root.getElementsByTagName("downImg").item(0).getTextContent();
+		String left = root.getElementsByTagName("leftImg").item(0).getTextContent();
+		String right = root.getElementsByTagName("rightImg").item(0).getTextContent();
 
-			double spriteXOffset = Double.parseDouble(root.getElementsByTagName("spriteXOffset").item(0).getTextContent());
-			double spriteYOffset = Double.parseDouble(root.getElementsByTagName("spriteYOffset").item(0).getTextContent());
+		double width = Double.parseDouble(root.getElementsByTagName("hitboxWidth").item(0).getTextContent());
+		double height = Double.parseDouble(root.getElementsByTagName("hitboxHeight").item(0).getTextContent());
 
-			cp = new Creature.CreatureParameters(up, down, left, right, width, height, spriteXOffset, spriteYOffset);
-			
-			// optional
-			cp.maxHealth = Double.parseDouble(root.getElementsByTagName("maxHealth").item(0).getTextContent());
+		double spriteXOffset = Double.parseDouble(root.getElementsByTagName("spriteXOffset").item(0).getTextContent());
+		double spriteYOffset = Double.parseDouble(root.getElementsByTagName("spriteYOffset").item(0).getTextContent());
 
-		} catch (SAXException | IOException | ParserConfigurationException e1) {
-			e1.printStackTrace();
-		}
+		int numFrames = Integer.parseInt(root.getElementsByTagName("numberOfFrames").item(0).getTextContent());
+
+		cp = new Creature.CreatureParameters(up, down, left, right, width, height, spriteXOffset, spriteYOffset, numFrames);
+
+		cp.maxHealth = Double.parseDouble(root.getElementsByTagName("maxHealth").item(0).getTextContent());
 
 		return cp;
 	}

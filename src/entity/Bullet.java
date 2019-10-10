@@ -74,5 +74,10 @@ public class Bullet extends Entity2D {
 	public ImageView getView() {
 		return flyingAnimation.getImageView();
 	}
+
+	@Override
+	public void cleanup() {
+		flyingAnimation.stop();
+	}
 }
 
