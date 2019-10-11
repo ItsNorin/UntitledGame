@@ -43,6 +43,7 @@ public final class Level {
 		this.name = name;
 		entities = new LinkedList<Entity2D>();
 		levelStartMS = System.currentTimeMillis();
+        TestLogger.setStartTime(levelStartMS);
 		prevFrameMS = levelStartMS;
 	}
 
@@ -74,7 +75,7 @@ public final class Level {
 	private static void addEntityToPane(Entity2D e, boolean hitboxVisible) {
 		if (aLevelExists) {
 			pane.getChildren().add(e.getView());
-
+            
 			if (hitboxVisible) { // make all hitboxes visible for debug
 				e.getHitbox().setVisible(true);
 				e.getHitbox().setFill(Color.RED);
@@ -162,7 +163,7 @@ public final class Level {
 				e.updatePosition(dMS, entities);
 
 				if (e instanceof Player) {
-
+                  
 				} else {
 					// if entity's hitbox is outside of window, remove it
 					if (!isRectangleInWindow(e.getHitbox(), 40))
