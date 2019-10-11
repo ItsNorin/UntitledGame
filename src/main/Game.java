@@ -18,7 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import levels.Level;
 import util.FrameRateCounter;
-import util.ResourceLoader;
+import util.ResourceManager;
 import util.TestLogger;
 
 /**
@@ -38,13 +38,13 @@ public class Game extends Pane implements Runnable {
 		levels = new HashMap<String, Level>();
 		currentLevel = null;
 		
-		// TODO: load levels from xmls
+		// TODO: load levels from xmls, requires event system completion
 		levels.put("1", new Level("1"));
 		
 		// keyboard input handling
 		input = new ArrayList<KeyCode>();
 		
-		player = (Player)ResourceLoader.loadEntityFromXML("defaultPlayer.xml");
+		player = (Player)ResourceManager.loadEntityFromXML("defaultPlayer.xml");
 		
 		frc = new FrameRateCounter();
 		frc.getLabel().setViewOrder(-100);

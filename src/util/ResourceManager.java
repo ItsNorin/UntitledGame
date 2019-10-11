@@ -16,8 +16,8 @@ import entity.Player;
 import javafx.scene.image.Image;
 import levels.Level;
 
-public enum ResourceLoader {
-	LOADER;
+public enum ResourceManager {
+	RM;
 
 	private static DocumentBuilderFactory dbFactory;
 	private static final FilenameFilter isXML;
@@ -82,7 +82,7 @@ public enum ResourceLoader {
 
 			switch (type.toLowerCase()) {
 			case "player":      e = new Player(loadCreatureParamsFromXML(XMLFile));       break;
-			
+			case "bullet":
 			default:
 			}
 

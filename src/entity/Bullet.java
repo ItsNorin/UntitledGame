@@ -3,7 +3,9 @@ package entity;
 import java.util.LinkedList;
 
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 import util.ImageViewAnimation;
+import util.ResourceManager;
 
 /**
  * 
@@ -37,6 +39,42 @@ public class Bullet extends Entity2D {
 			double spriteXOffset, double spriteYOffset) 
 	{
 		this.flyingAnimation = animation.clone();
+		
+		this.hitbox.setWidth(width);
+		this.hitbox.setHeight(height);
+		
+		this.spriteXOffset = spriteXOffset;
+		this.spriteYOffset = spriteYOffset;
+		
+		this.damage = damage;
+		
+		this.flyingAnimation.playRepeat();
+	}
+	
+	
+	
+	/**
+	 * @param imageName
+	 * @param animationLength
+	 * @param numFrames
+	 * @param imageXOffset
+	 * @param imageYOffset
+	 * 
+	 * @param damage amount of health this bullet will remove when hitting a target
+	 * @param width width of hitbox
+	 * @param height height of hitbox
+	 * @param spriteXOffset x offset of sprite animation relative to hitbox
+	 * @param spriteYOffset y offset of sprite animation relative to hitbox
+	 */
+	public Bullet(
+			String imageName, int animationLength, int numFrames, int imageXOffset, int imageYOffset,
+			double damage, 
+			double width, double height, 
+			double spriteXOffset, double spriteYOffset) 
+	{
+		ImageView iv = new ImageView();
+		iv.setImage(ResourceManager.getImage(imageName));
+		this.flyingAnimation = new ImageViewAnimation(iv, new Duration(animationLength), numFrames, imageXOffset, imageYOffset);
 		
 		this.hitbox.setWidth(width);
 		this.hitbox.setHeight(height);

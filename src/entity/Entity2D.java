@@ -227,8 +227,15 @@ public abstract class Entity2D {
 	 * @return true if sprite bounding boxes are overlapping
 	 */
 	public boolean overlaps(final Entity2D s) {
+		
 		if(s == this) // cannot collide with itsself
 			return false;
+		// quick check with Manhattan distance, improves performance with lots of entities. 
+		if(Math.abs(this.hitbox.getX() - s.hitbox.getX()) > hitbox.getWidth() + s.hitbox.getWidth())
+			return false;
+		if(Math.abs(this.hitbox.getY() - s.hitbox.getY()) > hitbox.getHeight() + s.hitbox.getHeight())
+			return false;
+		// do complete collision detection
 		Shape r = Shape.intersect(hitbox, s.hitbox);
 		return r.getBoundsInLocal().getWidth() != -1 || r.getBoundsInLocal().getHeight() != -1;
 	}
@@ -239,15 +246,9 @@ public abstract class Entity2D {
 	 * @param ms Milliseconds since last update
 	 */
 	public void updatePosition(final long ms, final LinkedList<Entity2D> entities) {
-		// TODO: Ensure this works
 		setVelocity(velocity.getX() * Math.pow(acceleration.getX(), ms),
 				    velocity.getY() * Math.pow(acceleration.getY(), ms));
 		setRotationalVelocity(rotationalVelocity + Math.pow(rotationalAcceleration, ms));
-
-		for (Entity2D e : entities) {
-				// TODO do proper collision detection
-			
-		}
 
 		Point2D vMs = velocity.multiply(ms);
 		setPosition(getX() + vMs.getX(), getY() + vMs.getY());

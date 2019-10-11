@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import util.ImageViewAnimation;
-import util.ResourceLoader;
+import util.ResourceManager;
 
 /**
  * Living creature
@@ -60,16 +60,14 @@ public class Creature extends Entity2D {
 		
 		moveImages = new ArrayList<Image>();
 		currentView = new ImageView();
-		moveImages.add(FACING.LEFT.VALUE, ResourceLoader.getImage(facingLeft));
-		moveImages.add(FACING.RIGHT.VALUE, ResourceLoader.getImage(facingRight));
-		moveImages.add(FACING.UP.VALUE, ResourceLoader.getImage(facingUp));
-		moveImages.add(FACING.DOWN.VALUE, ResourceLoader.getImage(facingDown));
+		moveImages.add(FACING.LEFT.VALUE, ResourceManager.getImage(facingLeft));
+		moveImages.add(FACING.RIGHT.VALUE, ResourceManager.getImage(facingRight));
+		moveImages.add(FACING.UP.VALUE, ResourceManager.getImage(facingUp));
+		moveImages.add(FACING.DOWN.VALUE, ResourceManager.getImage(facingDown));
 		
 		moveAnim = new ImageViewAnimation(currentView, new Duration(1000), numFrames, 0, 0);
 		
 		currentFacing = FACING.DOWN;
-		setAnimation(currentFacing.VALUE);
-		moveAnim.playRepeat();
 		
 		health = new Stat("Health", 10).recover();
 	}
@@ -97,6 +95,7 @@ public class Creature extends Entity2D {
 			this.spriteXOffset = spriteXOffset;
 			this.spriteYOffset = spriteYOffset;
 			this.numFrames = numFrames;
+			maxHealth = 10;
 		}
 	}
 	
@@ -107,11 +106,6 @@ public class Creature extends Entity2D {
 	
 	public Stat getHealth() {
 		return health;
-	}
-	
-	protected void setAnimation(int i) {
-		moveAnim.stop();
-		currentView.setImage(moveImages.get(i));
 	}
 	
 	@Override
@@ -133,15 +127,16 @@ public class Creature extends Entity2D {
 		
 		double dv = Math.hypot(v.getX(), v.getY());
 		moveAnim.setLength(250 / dv);
-		if(dv < 0.05) {
+		
+		if(dv < 0.00005) 
 			moveAnim.pauseAndGoToStart();
-		}
 		else if(moveAnim.getStatus() != Status.RUNNING)
-				moveAnim.playRepeat();
+			moveAnim.playRepeat();
 		
 		if(newFacing.VALUE != currentFacing.VALUE) {
 			currentFacing = newFacing;
-			setAnimation(currentFacing.VALUE);
+			currentView.setImage(moveImages.get(currentFacing.VALUE));
+			moveAnim.pauseAndGoToStart();
 			moveAnim.playRepeat();
 		}
 		super.setVelocity(v);
@@ -158,8 +153,8 @@ public class Creature extends Entity2D {
 	@Override
 	public Creature setPosition(double xPos, double yPos) {
 		super.setPosition(xPos, yPos);
-		currentView.setX(xPos + spriteXOffset);
-		currentView.setY(yPos + spriteYOffset);
+		currentView.setX(hitbox.getX() + spriteXOffset);
+		currentView.setY(hitbox.getY() + spriteYOffset);
 		return this;
 	}
 	
