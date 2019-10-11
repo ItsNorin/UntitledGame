@@ -2,8 +2,12 @@ package entity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import javafx.scene.Node;
 
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * 
@@ -14,6 +18,8 @@ public final class Player extends Creature {
 	private double KEY_PRESS_VELOCITY = 0.12;
 	private double SPRINTING_MULTIPLIER = 2;
 	private double minX, maxX, minY, maxY;
+    private final Pane uiContainer;
+    private final Rectangle uiHealthBorder, uiHealthFill;
 
 	/**
 	 * @param facingUp name of image for facing up animation
@@ -35,11 +41,29 @@ public final class Player extends Creature {
 	{
 		super(facingUp, facingDown, facingLeft, facingRight, width, height, spriteXOffset, spriteYOffset, numFrames);
 		setBounds(0,0,0,0);
+        uiHealthBorder = new Rectangle(getHitbox().getX() - getHitbox().getWidth(), getHitbox().getY() + getHitbox().getHeight(), getHitbox().getWidth(), 6);
+        uiHealthBorder.setFill(Color.DARKRED);
+        uiHealthBorder.setStroke(Color.BLACK);
+        uiHealthBorder.setStrokeWidth(1.0);
+        uiHealthFill = new Rectangle(getHitbox().getX() - getHitbox().getWidth() + 1, getHitbox().getY() + getHitbox().getHeight() + 1, (int) (getHitbox().getWidth()*health.getCurrent()/health.getMax()), 4);
+        uiHealthFill.setFill(Color.RED);
+        uiContainer = new Pane(uiHealthBorder, uiHealthFill);
 	}
 	
 	public Player(Creature.CreatureParameters cp) {
 		super(cp);
+        uiHealthBorder = new Rectangle(getHitbox().getX() - getHitbox().getWidth(), getHitbox().getY() + getHitbox().getHeight(), getHitbox().getWidth(), 6);
+        uiHealthBorder.setFill(Color.DARKRED);
+        uiHealthBorder.setStroke(Color.BLACK);
+        uiHealthBorder.setStrokeWidth(1.0);
+        uiHealthFill = new Rectangle(getHitbox().getX() - getHitbox().getWidth() + 1, getHitbox().getY() + getHitbox().getHeight() + 1, (int) (getHitbox().getWidth()*health.getCurrent()/health.getMax()), 4);
+        uiHealthFill.setFill(Color.RED);
+        uiContainer = new Pane(uiHealthBorder, uiHealthFill);
 	}
+    
+    public Node getUI() {
+      return uiContainer;
+    }
 
 	public void handleKeyInput(ArrayList<KeyCode> keys) {
 		// movement
@@ -103,6 +127,12 @@ public final class Player extends Creature {
 		
 		this.setVelocity(newVX, newVY);
 		this.setPosition(newX, newY);
+        
+        uiHealthBorder.setX(getHitbox().getX());
+        uiHealthBorder.setY(getHitbox().getY() + getHitbox().getHeight());
+        uiHealthFill.setX(getHitbox().getX() + 1);
+        uiHealthFill.setY(getHitbox().getY() + getHitbox().getHeight() + 1);
+        uiHealthFill.setWidth(getHitbox().getWidth() * health.getCurrent() / health.getMax() - 2);
 	}
 	
 	/** Sets bounds for player's position */
