@@ -12,17 +12,18 @@ public enum TestLogger {
 	public static final boolean LOG_KEYS = false;
 	public static final boolean LOG_ENTITY_COUNT = true;
 	public static final boolean LOG_ENTITY_DATA = false;
-    protected static long TIME_OFFSET = 0;
-	
+	protected static long TIME_OFFSET = 0;
+
 	public static void logBasicEntityData(Entity2D e) {
 		// ?? System.out.println(String.format("[%09d]", System.currentTimeMillis() - TIME_OFFSET))
 	}
-    
+
 	public static void logEntities(LinkedList<Entity2D> entities) {
-		if(LOG_ENTITY_COUNT)
-			System.out.println(String.format("[%09d] Entity Count: %d", System.currentTimeMillis() - TIME_OFFSET, entities.size()));
-		if(LOG_ENTITY_DATA)
-			for(Entity2D e : entities)
+		if (LOG_ENTITY_COUNT)
+			System.out.println(String.format("[%09d] Entity Count: %d", System.currentTimeMillis() - TIME_OFFSET,
+					entities.size()));
+		if (LOG_ENTITY_DATA)
+			for (Entity2D e : entities)
 				logBasicEntityData(e);
 	}
 
@@ -43,17 +44,17 @@ public enum TestLogger {
 			System.out.println(e.getAcceleration().getY());
 		}
 	}
-	
+
 	public static void logKeys(ArrayList<KeyCode> input) {
-		if(LOG_KEYS) {
+		if (LOG_KEYS) {
 			System.out.print(String.format("[%09d] Keys: ", System.currentTimeMillis() - TIME_OFFSET));
-			for(KeyCode kc : input) 
+			for (KeyCode kc : input)
 				System.out.print(kc.toString() + " ");
 			System.out.println();
 		}
 	}
-	
-    public static void setStartTime(long time) {
-      TIME_OFFSET = time;
-    }
+
+	public static void setStartTime(long time) {
+		TIME_OFFSET = time;
+	}
 }

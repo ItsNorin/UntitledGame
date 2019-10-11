@@ -24,7 +24,7 @@ public class Creature extends Entity2D {
 		private FACING(int v) { VALUE = v; }
 	};
 	
-	protected Stat health;
+	protected StatWithBar health;
 	protected ArrayList<Image> moveImages;
 	protected ImageViewAnimation moveAnim;
 	
@@ -69,7 +69,7 @@ public class Creature extends Entity2D {
 		
 		currentFacing = FACING.DOWN;
 		
-		health = new Stat("Health", 10).recover();
+		health = new StatWithBar("Health", 100, this.getHitbox().getWidth(), 6).recover();
 	}
 	
 	// to make instantiation of creatures less argument heavy
@@ -95,7 +95,7 @@ public class Creature extends Entity2D {
 			this.spriteXOffset = spriteXOffset;
 			this.spriteYOffset = spriteYOffset;
 			this.numFrames = numFrames;
-			maxHealth = 10;
+			maxHealth = 100;
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class Creature extends Entity2D {
 		health.setMax(cp.maxHealth).recover();
 	}
 	
-	public Stat getHealth() {
+	public StatWithBar getHealthBar() {
 		return health;
 	}
 	
@@ -148,6 +148,7 @@ public class Creature extends Entity2D {
 		super.updatePosition(ms, solids);
 		currentView.setX(hitbox.getX() + spriteXOffset);
 		currentView.setY(hitbox.getY() + spriteYOffset);
+		health.fitUnder(hitbox, 3);
 	}
 	
 	@Override
@@ -155,6 +156,7 @@ public class Creature extends Entity2D {
 		super.setPosition(xPos, yPos);
 		currentView.setX(hitbox.getX() + spriteXOffset);
 		currentView.setY(hitbox.getY() + spriteYOffset);
+		health.fitUnder(hitbox, 3);
 		return this;
 	}
 	

@@ -1,12 +1,13 @@
 package entity;
 
 public class Stat {
-	private double current;
-	private double max;
-	private String name;
+	protected String name;
+	protected double max;
+	protected double current;
 	
 	public Stat(String name, double max, double current) {
-		setName(name).setMax(max);
+		this.name = name;
+		this.max = max;
 		this.current = current;
 	}
 	

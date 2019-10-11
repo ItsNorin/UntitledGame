@@ -3,6 +3,7 @@ package levels;
 import java.util.LinkedList;
 
 import entity.Bullet;
+import entity.Creature;
 import entity.Entity2D;
 import entity.Player;
 import javafx.scene.image.ImageView;
@@ -82,6 +83,9 @@ public final class Level {
 				e.getHitbox().setOpacity(0.15);
 				pane.getChildren().add(e.getHitbox());
 			}
+			
+			if(e instanceof Creature) 
+				pane.getChildren().add(((Creature)e).getHealthBar().getBar());
 		}
 	}
 
@@ -172,7 +176,7 @@ public final class Level {
 
 				if (e instanceof Bullet) {
 					if (e.overlaps(player)) {
-						player.getHealth().add(-((Bullet) e).getDamage());
+						player.getHealthBar().add(-((Bullet) e).getDamage());
 						toRemove.add(e);
 					}
 				}

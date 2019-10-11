@@ -108,7 +108,7 @@ public abstract class Entity2D {
 	}
 
 	public Entity2D setVelocityWithAngle(double theta, double v) {
-		return setVelocity(Math.cos(Math.toRadians(theta)) * v, Math.sin(Math.toRadians(theta)) * v);
+		return setVelocity(Math.cos(Math.toRadians(theta)) * v, -Math.sin(Math.toRadians(theta)) * v);
 	}
 	
 	/** unit vector in the direction the point is facing */

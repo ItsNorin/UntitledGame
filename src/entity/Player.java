@@ -39,6 +39,7 @@ public final class Player extends Creature {
 	
 	public Player(Creature.CreatureParameters cp) {
 		super(cp);
+		setBounds(0,0,0,0);
 	}
 
 	public void handleKeyInput(ArrayList<KeyCode> keys) {

@@ -17,5 +17,5 @@
   <spriteYOffset>-13</spriteYOffset>
   
   <!-- health of player -->
-  <maxHealth>10</maxHealth>
+  <maxHealth>500</maxHealth>
 </entity>
