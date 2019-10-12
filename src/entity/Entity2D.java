@@ -119,12 +119,12 @@ public abstract class Entity2D {
 		return setVelocity(Math.cos(theta) * v, Math.sin(theta) * v);
 	}
 	
-	public Entity2D setVelocityAtPoint(double x, double y, double v) {
+	public Entity2D setVelocityTowardsPoint(double x, double y, double v) {
 		return setVelocityWithAngle(Math.atan2(y-this.getCenterY(), x-this.getCenterX()), v);
 	}
 	
 	public Entity2D setVelocityAtPointKeepV(double x, double y) {
-		return setVelocityAtPoint(x, y, getTotalVelocity());
+		return setVelocityTowardsPoint(x, y, getTotalVelocity());
 	}
 	
 	/** @return current angle in radians */

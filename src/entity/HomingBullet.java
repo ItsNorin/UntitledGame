@@ -34,6 +34,13 @@ public class HomingBullet extends Bullet {
 		resetStart();
 	}
 	
+	public HomingBullet(BulletParams bp) {
+		super(bp);
+		tracking = null;
+		lifespan = (bp.lifespanMS == 0) ? null : new Duration(bp.lifespanMS);
+		resetStart();
+	}
+
 	/** creates an exact copy of this bullet */
 	@Override
 	public HomingBullet clone() {

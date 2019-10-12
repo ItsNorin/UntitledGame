@@ -51,8 +51,6 @@ public class Bullet extends Entity2D {
 		this.flyingAnimation.playRepeat();
 	}
 	
-	
-	
 	/**
 	 * @param imageName
 	 * @param animationLength
@@ -85,6 +83,28 @@ public class Bullet extends Entity2D {
 		this.damage = damage;
 		
 		this.flyingAnimation.playRepeat();
+	}
+	
+	public static class BulletParams {
+		public String imageName;
+		public int animationLength, numFrames, imageXOffset, imageYOffset;
+		public double damage, width, height, spriteXOffset, spriteYOffset;
+		public int lifespanMS;
+		
+		public BulletParams() {
+			imageName = "enemyRight.png";
+			animationLength = 1000;
+			numFrames = 4;
+			damage = 5;
+			width = 30;
+			height = 30;
+			lifespanMS = 0;
+		}
+	}
+	
+	public Bullet(BulletParams bp) {
+		this(bp.imageName, bp.animationLength, bp.numFrames, bp.imageXOffset, bp.imageYOffset,
+			bp.damage, bp.width, bp.height, bp.spriteXOffset, bp.spriteYOffset);
 	}
 	
 	/** creates an exact copy of this bullet */

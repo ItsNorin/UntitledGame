@@ -1,0 +1,21 @@
+<entity type="bullet">
+  <!-- Images used for animations -->
+	<image>enemyRight.png</image>
+  
+  <!-- Number of frames in facing animation. Must be identical for all animations-->
+  <numberOfFrames>4</numberOfFrames> 
+  
+  <!-- time animation spends on each frame-->
+  <frameTimeMS>500</frameTimeMS> 
+  
+  <!-- hitbox size-->
+  <hitboxWidth>30</hitboxWidth>
+  <hitboxHeight>30</hitboxHeight>
+  
+ <!-- offset of images relative to hitbox -->
+  <spriteXOffset>0</spriteXOffset>
+  <spriteYOffset>0</spriteYOffset>
+  
+  <!-- damage this bullet does -->
+  <damage>5</damage>
+</entity>

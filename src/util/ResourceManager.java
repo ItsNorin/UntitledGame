@@ -10,8 +10,10 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.*;
 
+import entity.Bullet;
 import entity.Creature;
 import entity.Entity2D;
+import entity.HomingBullet;
 import entity.Player;
 import javafx.scene.image.Image;
 import levels.Level;
@@ -31,19 +33,18 @@ public enum ResourceManager {
 			}
 		};
 	}
+	
+	public static Image getImage(File imgFile) {
+		return new Image(imgFile.toURI().toString());
+	}
 
 	public static Image getImage(String name) {
-		Image i = new Image("resources/" + name);
-		return i;
+		return getImage(new File("res/images/" + name));
 	}
 	
 	
-	private static Creature.CreatureParameters loadCreatureParamsFromXML(File XMLFile) throws ParserConfigurationException, SAXException, IOException {
+	private static Creature.CreatureParameters loadCreatureParamsFromXML(final Element root) throws ParserConfigurationException, SAXException, IOException {
 		Creature.CreatureParameters cp = null;
-
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(XMLFile);
-		Element root = doc.getDocumentElement();
 
 		String up = root.getElementsByTagName("upImg").item(0).getTextContent();
 		String down = root.getElementsByTagName("downImg").item(0).getTextContent();
@@ -64,6 +65,22 @@ public enum ResourceManager {
 
 		return cp;
 	}
+	
+	private static Bullet.BulletParams loadBulletParamsFromXML(final Element root) throws ParserConfigurationException, SAXException, IOException {
+		Bullet.BulletParams bp = new Bullet.BulletParams();
+		
+		bp.imageName = root.getElementsByTagName("image").item(0).getTextContent();
+		bp.numFrames = Integer.parseInt(root.getElementsByTagName("numberOfFrames").item(0).getTextContent());
+		bp.animationLength = Integer.parseInt(root.getElementsByTagName("frameTimeMS").item(0).getTextContent());
+		bp.width = Double.parseDouble(root.getElementsByTagName("hitboxWidth").item(0).getTextContent());
+		bp.height = Double.parseDouble(root.getElementsByTagName("hitboxHeight").item(0).getTextContent());
+		bp.imageXOffset = Integer.parseInt(root.getElementsByTagName("spriteXOffset").item(0).getTextContent());
+		bp.imageYOffset = Integer.parseInt(root.getElementsByTagName("spriteYOffset").item(0).getTextContent());
+		bp.damage = Double.parseDouble(root.getElementsByTagName("damage").item(0).getTextContent());
+		bp.lifespanMS = Integer.parseInt(root.getElementsByTagName("lifespanMS").item(0).getTextContent());
+		
+		return bp;
+	}
 
 	/**
 	 * @param XMLFile xml file
@@ -81,15 +98,16 @@ public enum ResourceManager {
 			String type = root.getAttribute("type");
 
 			switch (type.toLowerCase()) {
-			case "player":      e = new Player(loadCreatureParamsFromXML(XMLFile));       break;
-			case "bullet":
+			case "player":        e = new Player(loadCreatureParamsFromXML(root));       break;
+			case "bullet":        e = new Bullet(loadBulletParamsFromXML(root));         break;
+			case "homingbullet":  e = new HomingBullet(loadBulletParamsFromXML(root));   break;
 			default:
 			}
 
 		} catch (SAXException | IOException | ParserConfigurationException e1) {
 			e1.printStackTrace();
 		}
-
+		
 		return e;
 	}
 
