@@ -5,15 +5,12 @@ import java.util.LinkedList;
 import entity.Bullet;
 import entity.Creature;
 import entity.Entity2D;
+import entity.HomingBullet;
 import entity.Player;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.util.Duration;
-import util.ImageViewAnimation;
-import util.ResourceManager;
 import util.TestLogger;
 
 /**
@@ -94,6 +91,8 @@ public final class Level {
 		if (aLevelExists) {
 			pane.getChildren().remove(e.getView());
 			pane.getChildren().remove(e.getHitbox());
+			if(e instanceof Creature)
+				pane.getChildren().remove(((Creature)e).getHealthBar().getBar());
 		}
 	}
 
@@ -112,7 +111,7 @@ public final class Level {
 		return name;
 	}
 
-	Bullet b;
+	HomingBullet b;
 
 	/**
 	 * If no other level exists, will initialize this level.
@@ -124,18 +123,19 @@ public final class Level {
 			aLevelExists = true;
 			Level.pane = pane;
 
-			b = new Bullet("enemyRight.png", 500, 4, 0, 0, 10, 10, 10, 0, 0);
-			b.setPosition(
-					(pane.getLayoutBounds().getMaxX() - pane.getLayoutBounds().getMinX()) / 2
-							+ pane.getLayoutBounds().getMinX(),
-					(pane.getLayoutBounds().getMaxY() - pane.getLayoutBounds().getMinY()) / 2
-							+ pane.getLayoutBounds().getMinY());
-
 			this.player = player;
 			player.setBounds(0, pane.getWidth(), 0, pane.getHeight());
 			player.setPosition(pane.getWidth() / 2, pane.getHeight() / 4);
 			player.setAcceleration(0.98, 0.98);
 			entities.add(player);
+			
+			b = new HomingBullet("enemyRight.png", 500, 4, 0, 0, 5, 30, 30, 0, 0);
+			b.setPosition(
+					(pane.getLayoutBounds().getMaxX() - pane.getLayoutBounds().getMinX()) / 2
+							+ pane.getLayoutBounds().getMinX(),
+					(pane.getLayoutBounds().getMaxY() - pane.getLayoutBounds().getMinY()) / 2
+							+ pane.getLayoutBounds().getMinY());
+			b.track(player);
 
 			for (Entity2D e : entities)
 				addEntityToPane(e, true);
@@ -157,9 +157,9 @@ public final class Level {
 			// TODO: work on bullet recycling system, which will keep a certain number of
 			// bullets on hand, simply updating their positions, velocities, etc. when
 			// needed
-			if (entities.size() < 600)
-				addEntity(b.clone().setVelocityWithAngle(Math.random() * 300, Math.random() * 0.01 + 0.005));
-
+			if (entities.size() < 2)
+				//addEntity(b.clone().setVelocityWithAngle(Math.random() * 300, Math.random() * 0.01 + 0.005));
+				addEntity(b.clone().setVelocityAtPoint(player.getCenterX(), player.getCenterY(), Math.random() * 0.15 + 0.1));
 			// update all entities
 			for (Entity2D e : entities) {
 				TestLogger.logEntityPositionData(e);
@@ -169,16 +169,19 @@ public final class Level {
 				if (e instanceof Player) {
                   
 				} else {
-					// if entity's hitbox is outside of window, remove it
-					if (!isRectangleInWindow(e.getHitbox(), 40))
+					if (!isRectangleInWindow(e.getHitbox(), 40)) // if entity's hitbox is outside of window, remove it
 						toRemove.add(e);
 				}
-
 				if (e instanceof Bullet) {
 					if (e.overlaps(player)) {
 						player.getHealthBar().add(-((Bullet) e).getDamage());
 						toRemove.add(e);
 					}
+				}
+				
+				if(e instanceof HomingBullet) {
+					if(!((HomingBullet)e).isActive()) 
+						toRemove.add(e);
 				}
 			}
 

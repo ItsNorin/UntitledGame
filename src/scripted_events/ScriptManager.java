@@ -2,6 +2,8 @@ package scripted_events;
 
 import java.util.HashMap;
 
+import levels.Level;
+
 public final class ScriptManager {
 	private ScriptManager() {}
 	
@@ -20,10 +22,10 @@ public final class ScriptManager {
 	 * @param levelName Name of level
 	 * @return all events that can occur in that level
 	 */
-	public static HashMap<String, ScriptedEvent> getAllEventsForLevel(String levelName) {
+	public static HashMap<String, ScriptedEvent> getAllEventsForLevel(Level level) {
 		HashMap<String, ScriptedEvent> events = new HashMap<String, ScriptedEvent>();
 		for (ScriptedEvent e : allEvents.values())
-			if (e.getLevelName() == levelName)
+			if (e.getLevel() == level)
 				events.put(e.getName(), e);
 		return events;
 	}

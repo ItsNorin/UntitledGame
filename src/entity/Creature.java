@@ -72,6 +72,18 @@ public class Creature extends Entity2D {
 		health = new StatWithBar("Health", 100, this.getHitbox().getWidth(), 6).recover();
 	}
 	
+	private Creature(StatWithBar health, 
+			ArrayList<Image> moveImages, ImageViewAnimation moveAnim, 
+			double spriteXOffset, double spriteYOffset, FACING currentFacing) 
+	{
+		this.health = health;
+		this.moveImages = moveImages;
+		this.moveAnim = moveAnim;
+		this.spriteXOffset = spriteXOffset;
+		this.spriteYOffset = spriteYOffset;
+		this.currentFacing = currentFacing;
+	}
+	
 	// to make instantiation of creatures less argument heavy
 	public static class CreatureParameters {
 		public String up, down, left, right;
@@ -102,6 +114,12 @@ public class Creature extends Entity2D {
 	public Creature(CreatureParameters cp) {
 		this(cp.up, cp.down, cp.left, cp.right, cp.width, cp.height, cp.spriteXOffset, cp.spriteYOffset, cp.numFrames);
 		health.setMax(cp.maxHealth).recover();
+	}
+	
+	@SuppressWarnings("unchecked") // suppressing ArrayList cloning
+	@Override
+	public Creature clone() {
+		return new Creature(health.clone(), (ArrayList<Image>)(moveImages.clone()), moveAnim.clone(), spriteXOffset, spriteYOffset, currentFacing);
 	}
 	
 	public StatWithBar getHealthBar() {

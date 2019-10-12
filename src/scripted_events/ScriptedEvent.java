@@ -1,5 +1,7 @@
 package scripted_events;
 
+import levels.Level;
+
 /**
  * Scripted events contain information about what should happen in game, and what conditions must be met
  * 
@@ -7,12 +9,22 @@ package scripted_events;
  *
  */
 public abstract class ScriptedEvent {
+	protected final String name;
+	protected final Level level;
+	
+	public ScriptedEvent(String name, Level level) {
+		this.name = name;
+		this.level = level;
+	}
 	
 	/** @return Name of event for identification */
-	public abstract String getName();
+	public final String getName() {
+		return name;
+	}
 	
-	/** @return Name of level for event */
-	public abstract String getLevelName();
+	public final Level getLevel() {
+		return level;
+	}
 	
 	/** executes the event */
 	public abstract void run();

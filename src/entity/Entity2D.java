@@ -78,6 +78,14 @@ public abstract class Entity2D {
 		return hitbox.getY();
 	}
 	
+	public double getCenterX() {
+		return hitbox.getX() + hitbox.getWidth() / 2;
+	}
+	
+	public double getCenterY() {
+		return hitbox.getY() + hitbox.getHeight() / 2;
+	}
+	
 	/**
 	 * adds to entity's current position
 	 * 
@@ -108,12 +116,24 @@ public abstract class Entity2D {
 	}
 
 	public Entity2D setVelocityWithAngle(double theta, double v) {
-		return setVelocity(Math.cos(Math.toRadians(theta)) * v, -Math.sin(Math.toRadians(theta)) * v);
+		return setVelocity(Math.cos(theta) * v, Math.sin(theta) * v);
 	}
 	
-	/** unit vector in the direction the point is facing */
-	public Point2D getFacingUnitVect() {
-		return new Point2D(Math.cos(Math.toRadians(rotation)), Math.sin(Math.toRadians(rotation)));
+	public Entity2D setVelocityAtPoint(double x, double y, double v) {
+		return setVelocityWithAngle(Math.atan2(y-this.getCenterY(), x-this.getCenterX()), v);
+	}
+	
+	public Entity2D setVelocityAtPointKeepV(double x, double y) {
+		return setVelocityAtPoint(x, y, getTotalVelocity());
+	}
+	
+	/** @return current angle in radians */
+	public double getVelocityTheta() {
+		return Math.atan2(velocity.getY(), velocity.getX());
+	}
+	
+	public double getTotalVelocity() {
+		return Math.hypot(velocity.getX(), velocity.getY());
 	}
 
 	public Entity2D setRotation(double r) {
@@ -263,4 +283,7 @@ public abstract class Entity2D {
 	
 	/** stop doing anything, clean up entity for garbage collection */
 	public abstract void cleanup();
+	
+	/** create a copy of this entity */
+	public abstract Entity2D clone();
 }

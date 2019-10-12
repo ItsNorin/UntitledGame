@@ -20,19 +20,25 @@ public class Stat {
 		return this;
 	}
 	
+	public Stat setCurrent(double current) {
+		this.current = Math.max(Math.min(current, max), 0);
+		return this;
+	}
+	
 	public double getCurrent() {
 		return current;
 	}
 	
 	public Stat add(double amount) {
-		current = Math.min(current + amount, max);
-		current = Math.max(current, 0);
-		return this;
+		return setCurrent(current + amount);
+	}
+	
+	public Stat subtract(double amount) {
+		return setCurrent(current - amount);
 	}
 	
 	public Stat recover() {
-		current = max;
-		return this;
+		return setCurrent(max);
 	}
 	
 	public double getMax() {
