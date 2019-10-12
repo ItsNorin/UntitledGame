@@ -60,19 +60,17 @@ public class HomingBullet extends Bullet {
 	}
 	
 	public boolean isActive() {
+		if(lifespan == null)
+			return true;
 		return System.currentTimeMillis() <= startMS + lifespan.toMillis();
 	}
 	
 	@Override
 	public void updatePosition(long ms, LinkedList<Entity2D> solids) {
-		if(lifespan != null) {
-			if(this.isActive()) {
-				setVelocityAtPointKeepV(tracking.getCenterX(), tracking.getCenterY());
-				super.updatePosition(ms, solids);
-			}
-		} 
-		else
+		if(this.isActive()) {
+			setVelocityAtPointKeepV(tracking.getCenterX(), tracking.getCenterY());
 			super.updatePosition(ms, solids);
+		}
 	}
 
 }

@@ -135,7 +135,7 @@ public final class Level {
 							+ pane.getLayoutBounds().getMinX(),
 					(pane.getLayoutBounds().getMaxY() - pane.getLayoutBounds().getMinY()) / 2
 							+ pane.getLayoutBounds().getMinY());
-			b.track(player);
+			b.track(player).setLifespan(new Duration(2000));
 
 			for (Entity2D e : entities)
 				addEntityToPane(e, true);
@@ -157,7 +157,7 @@ public final class Level {
 			// TODO: work on bullet recycling system, which will keep a certain number of
 			// bullets on hand, simply updating their positions, velocities, etc. when
 			// needed
-			if (entities.size() < 2)
+			if (entities.size() < 10)
 				//addEntity(b.clone().setVelocityWithAngle(Math.random() * 300, Math.random() * 0.01 + 0.005));
 				addEntity(b.clone().setVelocityAtPoint(player.getCenterX(), player.getCenterY(), Math.random() * 0.15 + 0.1));
 			// update all entities
